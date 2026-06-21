@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TemplateMapper">
+    <select id="selectAll" resultType="com.example.entity.Template">
+        select * from `templatelist`
+        <where>
+            <if test="name != null">AND name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="style != null  and style != '全部'">AND style LIKE CONCAT('%', #{style}, '%')</if>
+        </where>
+        order by templateListId
+    </select>
+
+</mapper>

@@ -1,0 +1,32 @@
+server:
+  port: 8080
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/graduation_2025?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+  # 配置mybatis实体和xml映射
+  #发送邮件
+  mail:
+    #这个需要根据你开启的服务的邮箱是QQ邮箱,还是网易邮箱区分
+    #smtp.163.com为网易邮箱,smtp.qq.com为QQ邮箱
+    host: smtp.qq.com
+    username: 1293555912@qq.com #你开通SMTP服务的邮箱账号
+    password: nvgqdkbbumgdjiaj #刚刚生成的授权码,不是邮箱密码
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+mybatis:
+  ## 映射xml
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 配置日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true

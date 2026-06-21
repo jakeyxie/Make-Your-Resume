@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AdminMapper">
+    <select id="selectAll" resultType="com.example.entity.Admin">
+        select * from `admin`
+        <where>
+            <if test="username != null">username like concat(`%`, #{username}, `%`)</if>  <!-- 相当于 name like `%1%` -->
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectAllByObject" resultType="com.example.entity.Admin">
+        select * from `admin`
+        <where>
+            <if test="username != null and username != ''">username like concat('%', #{username}, '%')</if>
+            <if test="email != null and email != ''">and email like concat('%', #{email}, '%')</if>  <!-- 相当于 email like '%1%' -->
+            <if test="ids != null and ids != ''">
+                and id in
+                <foreach collection="idsArr" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectByEmail" resultType="com.example.entity.Admin">
+        select * from `admin`
+        <where>
+            email = #{email}
+        </where>
+    </select>
+
+    <insert id="insert">
+        insert into `admin` (email, username, password, phone, role, avatar, surname)
+        values(#{email},#{username},#{password},#{phone},#{role},#{avatar},#{surname})
+    </insert>
+
+
+    <update id="updateById">
+        update `admin` set email=#{email}, username = #{username}, password = #{password}, phone = #{phone}, role = #{role}, avatar = #{avatar}, surname = #{surname}
+        where id = #{id}
+    </update>
+</mapper>
