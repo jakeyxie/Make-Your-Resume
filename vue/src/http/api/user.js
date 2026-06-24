@@ -2,10 +2,9 @@ import request from "@/utils/request.js";
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
 
-export const loginAsync= (LoginForm) => {
+export const loginAsync = (LoginForm) => {
     request.post('/login', LoginForm.form).then(res => {
         if (res.code === '200') {
-            // 存储用户信息
             localStorage.setItem("user_data", JSON.stringify(res.data || {}))
             ElMessage.success('登录成功')
             router.push('/')
@@ -56,7 +55,7 @@ export const resetPasswordAsync = (ruleForm) => {
         return res;
         } else {
             ElMessage({
-                message: data.data,
+                message: res.msg || '重置密码失败',
                 type: 'error'
             });
             return false;

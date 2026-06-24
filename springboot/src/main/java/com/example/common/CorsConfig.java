@@ -1,5 +1,6 @@
 package com.example.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,15 +12,25 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 public class CorsConfig {
-//允许不同端口之间访问
+
+    @Value("${cors.allowed-origins:*}")
+    private String allowedOrigins;
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*"); // 1 设置访问源地址
-        corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
-        corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
-        source.registerCorsConfiguration("/**", corsConfiguration); // 4 对接口配置跨域设置
+        String[] origins = allowedOrigins.split(",");
+        for (String origin : origins) {
+            corsConfiguration.addAllowedOrigin(origin.trim());
+        }
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        // 只有明确指定了来源时才启用凭证
+        if (!"*".equals(allowedOrigins)) {
+            corsConfiguration.setAllowCredentials(true);
+        }
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
     }
 }

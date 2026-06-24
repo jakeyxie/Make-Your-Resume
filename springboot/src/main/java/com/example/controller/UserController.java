@@ -30,25 +30,11 @@ public class UserController {
         List<User> userList = userService.selectAll(null);
         return Result.success(userList);
     }
-    @GetMapping("/selectAllByObject")  //   完整的请求路径：http://ip:port/user/selectAll
+    @GetMapping("/selectAllByObject")
     public Result selectAllObject(User user) {
         List<User> userList = userService.selectAllByObject(user);
         return Result.success(userList);
     }
-    @PostMapping("/forgetPassword")
-    public Result login(@RequestBody String email) {
-        User dbUser = userService.selectByEmail(email);
-        if (dbUser != null) {
-            return Result.success(dbUser.getEmail());
-        }
-        return Result.error("邮箱错误");
-    }
-    @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        User dbUser = userService.login(user);
-        return Result.success(dbUser);
-    }
-
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
         userService.register(user);
@@ -56,19 +42,19 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public Result delete(@PathVariable Integer id) {  // @PathVariable 接收前端传来的路径参数
+    public Result delete(@PathVariable Integer id) {
         userService.deleteById(id);
         return Result.success();
     }
 
     @DeleteMapping("/deleteBatch")
-    public Result deleteBatch(@RequestBody List<User> list) {  //  @RequestBody 接收前端传来的 json数组
+    public Result deleteBatch(@RequestBody List<User> list) {
         userService.deleteBatch(list);
         return Result.success();
     }
 
     @PutMapping("/update")
-    public Result update(@RequestBody User user) {  // @RequestBody 接收前端传来的 json参数
+    public Result update(@RequestBody User user) {
         userService.update(user);
         return Result.success();
     }
@@ -78,13 +64,9 @@ public class UserController {
                              @RequestParam(defaultValue = "10") Integer pageSize,
                              User user) {
         PageInfo<User> pageInfo = userService.selectPage(pageNum, pageSize, user);
-        return Result.success(pageInfo);  // 返回的是分页的对象
+        return Result.success(pageInfo);
     }
 
-    /**
-     * 数据导出
-     * ids: 1,2,3
-     */
     @GetMapping("/export")
     public void exportData(User user, HttpServletResponse response) throws Exception {
         String ids = user.getIds();
@@ -92,45 +74,32 @@ public class UserController {
             String[] idsArr = ids.split(",");
             user.setIdsArr(idsArr);
         }
-        // 1. 拿到所有数据
         List<User> list = userService.selectAllByObject(user);
-        // 2. 构建Writer对象
         ExcelWriter writer = ExcelUtil.getWriter(true);
-        // 3. 设置中文表头
         writer.addHeaderAlias("username", "用户名");
         writer.addHeaderAlias("surname", "签名");
         writer.addHeaderAlias("phone", "电话");
         writer.addHeaderAlias("email", "邮箱");
-        // 默认的，未添加alias的属性也会写出，如果想只写出加了别名的字段，可以调用此方法排除之
         writer.setOnlyAlias(true);
-        // 4. 写出数据到writer
         writer.write(list);
-        // 5. 设置输出的文件的名称以及输出流的头信息
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
         String fileName = URLEncoder.encode("用户信息", StandardCharsets.UTF_8);
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
-        // 6. 写出到输出流 并关闭 writer
         ServletOutputStream os = response.getOutputStream();
         writer.flush(os);
         writer.close();
         os.close();
     }
 
-    /**
-     * 批量导入
-     */
     @PostMapping("/import")
     public Result importData(MultipartFile file) throws Exception {
-        //  1. 拿到输入流 构建 reader
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
-        //  2. 通过Reader 读取 excel 里面的数据
         reader.addHeaderAlias("用户名", "username");
         reader.addHeaderAlias("签名", "surname");
         reader.addHeaderAlias("电话", "phone");
         reader.addHeaderAlias("邮箱", "email");
         List<User> list = reader.readAll(User.class);
-        // 3. 将数据写到数据库
         for (User user : list) {
             userService.add(user);
         }

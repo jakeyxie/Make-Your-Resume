@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,14 +16,17 @@ public class CategoryService {
     @Resource
     CategoryMapper categoryMapper;
 
+    @Transactional
     public void add(Category category) {
         categoryMapper.insert(category);
     }
 
+    @Transactional
     public void update(Category category) {
         categoryMapper.updateById(category);
     }
 
+    @Transactional
     public void deleteById(Integer id) {
         categoryMapper.deleteById(id);
     }
@@ -32,7 +36,6 @@ public class CategoryService {
     }
 
     public PageInfo<Category> selectPage(Integer pageNum, Integer pageSize, Category category) {
-        // 开启分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Category> list = categoryMapper.selectAll(category);
         return PageInfo.of(list);

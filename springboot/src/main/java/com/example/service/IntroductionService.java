@@ -15,6 +15,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class IntroductionService {
     @Resource
     UserMapper userMapper;
 
+    @Transactional
     public void add(Introduction introduction) {
         Account currentUser = TokenUtils.getCurrentUser();
         introduction.setUserId(currentUser.getId());
@@ -35,11 +37,13 @@ public class IntroductionService {
         introductionMapper.insert(introduction);
     }
 
+    @Transactional
     public void update(Introduction introduction) {
         Account currentUser = TokenUtils.getCurrentUser();
         introductionMapper.updateById(introduction);
     }
 
+    @Transactional
     public void deleteById(Integer id) {
         Account currentUser = TokenUtils.getCurrentUser();
         introductionMapper.deleteById(id);
@@ -54,12 +58,10 @@ public class IntroductionService {
     }
 
     public PageInfo<Introduction> selectPage(Integer pageNum, Integer pageSize, Introduction introduction) {
-        // 查之前要先给他条件
         Account currentUser = TokenUtils.getCurrentUser();
         if ("user".equals(currentUser.getRole())) {
             introduction.setUserId(currentUser.getId());
         }
-        // 开启分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<Introduction> list = introductionMapper.selectAll(introduction);
         for (Introduction dbIntroduction : list) {
@@ -70,14 +72,11 @@ public class IntroductionService {
 
     public Introduction selectById(Integer id) {
         Introduction dbIntroduction = introductionMapper.selectById(id);
-        // 先拿到categoryId
         Integer categoryId = dbIntroduction.getCategoryId();
         Integer userId = dbIntroduction.getUserId();
-        // 通过categoryId从category表里通过主键查询出分类数据
         Category category = categoryMapper.selectById(categoryId);
         User user = userMapper.selectById(userId.toString());
         if (ObjectUtil.isNotEmpty(category)) {
-            // 把分类的title赋值给categoryTitle
             dbIntroduction.setCategoryTitle(category.getTitle());
         }
         if (ObjectUtil.isNotEmpty(user)) {

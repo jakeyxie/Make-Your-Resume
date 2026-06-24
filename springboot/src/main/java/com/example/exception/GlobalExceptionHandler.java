@@ -15,17 +15,16 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    @ResponseBody // 将result对象转换成 json的格式
+    @ResponseBody
     public Result error(Exception e) {
         log.error("系统异常", e);
         return Result.error("500","系统异常");
     }
 
-    //捕获CustomerException
-    @ExceptionHandler(CustomerException.class)
-    @ResponseBody // 将result对象转换成 json的格式
-    public Result customerError(CustomerException e) {
+    @ExceptionHandler(CustomException.class)
+    @ResponseBody
+    public Result customerError(CustomException e) {
         log.error("自定义错误", e);
-        return Result.error(e.getCode(),e.getMsg());
+        return Result.error(e.getCode(), e.getMsg());
     }
 }

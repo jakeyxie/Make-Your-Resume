@@ -17,7 +17,7 @@ import WorkExperienceOptionsVue from '@/template/template1/options/WorkExperienc
 import ProjectExperienceOptionsVue from '@/template/template1/options/ProjectExperienceOptions.vue';
 import AwardsOptionsVue from '@/template/template1/options/AwardsOptions.vue';
 import HobbiesOptionsVue from '@/template/template1/options/HobbiesOptions.vue';
-import SelfEvalutionOptionsVue from '@/template/template1/options/SelfEvalutionOptions.vue';
+import SelfEvaluationOptionsVue from '@/template/template1/options/SelfEvaluationOptions.vue';
 import WorksDisplayOptionsVue from '@/template/template1/options/WorksDisplayOptions.vue';
 
 // // 模板2属性设置面板
@@ -40,7 +40,7 @@ const componentList = [
   ProjectExperienceOptionsVue,
   AwardsOptionsVue,
   HobbiesOptionsVue,
-  SelfEvalutionOptionsVue,
+  SelfEvaluationOptionsVue,
   WorksDisplayOptionsVue,
   Template2SkillSpecialtiesOptions,
   Template2JobIntentionOptions,

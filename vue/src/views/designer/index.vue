@@ -87,62 +87,61 @@ const resetStoreAndLocal = () => {
 
 // 获取本地数据,初始化store里面的简历数据
 const localData = localStorage.getItem('resumeDraft');
-const userContent = localStorage.getItem('user_content');
 const route = useRoute();
 
-let { id, name, sign } = route.query; // 模板id和模板名称
-if(id%3 === 0) {
+let { id, name, sign, userContent } = route.query; // 模板id和模板名称
+// 模板ID映射：只支持实际存在的 template1 / template2 / template3
+const templateId = Number(id);
+if (templateId % 3 === 0) {
   id = 3;
-  name = "template3"
-}
-else{
-  id = id%3;
-  name = "template"+id;
+  name = "template3";
+} else if (templateId % 3 === 1) {
+  id = 1;
+  name = "template1";
+} else {
+  id = 2;
+  name = "template2";
 }
 resumeJsonStore.value.ID = id;
 resumeJsonStore.value.NAME = name;
 const componentName = ref(name); // 模板名称,即渲染哪个模板
-//  RefImpl Vue 3 的响应式引用类型
 
-const update = () =>{
-  let isCurrentJSON = isJSON(userContent);
+// 通过路由参数传递的 JSON 数据导入
+const update = (jsonStr) => {
+  let isCurrentJSON = isJSON(jsonStr);
   if (!isCurrentJSON) {
     ElMessage({
       message: 'JSON格式不正确！',
       type: 'error',
       center: true
     });
+    return;
   }
-  else {
-    let importJson = JSON.parse(userContent);
-    importJson.ID = id;
-    importJson.NAME = name;
-    console.log("######",importJson)
-    // 合并基础json与导入的json
-    for (let i = 0; i < importJson.LIST.length; i++) {
-      for (let j = 0; j < TEMPLATE_JSON.LIST.length; j++) {
-        if (TEMPLATE_JSON.LIST[j].model === importJson.LIST[i].model) {
-          importJson.LIST[i] = {
-            ...TEMPLATE_JSON.LIST[j],
-            ...importJson.LIST[i]
-          };
-        }
+  let importJson = JSON.parse(jsonStr);
+  importJson.ID = id;
+  importJson.NAME = name;
+  // 合并基础json与导入的json
+  for (let i = 0; i < importJson.LIST.length; i++) {
+    for (let j = 0; j < TEMPLATE_JSON.LIST.length; j++) {
+      if (TEMPLATE_JSON.LIST[j].model === importJson.LIST[i].model) {
+        importJson.LIST[i] = {
+          ...TEMPLATE_JSON.LIST[j],
+          ...importJson.LIST[i]
+        };
       }
     }
-    const afterStyleJson = useAddStyle(importJson);
-    store.changeResumeJsonData(afterStyleJson); // 更改store的数据
-    UuidStore.setUuid(); // 重新渲染左侧列表和右侧属性面板设置
-    useModel.$reset(); // 重置选中模块
   }
-}
-
+  const afterStyleJson = useAddStyle(importJson);
+  store.changeResumeJsonData(afterStyleJson); // 更改store的数据
+  UuidStore.setUuid(); // 重新渲染左侧列表和右侧属性面板设置
+  useModel.$reset(); // 重置选中模块
+};
 
 // 提交JSON
 const useModel = useResumeModelStore();
-if (sign === "1") {
-  update()
-}
-else if (localData) {
+if (sign === "1" && userContent) {
+  update(userContent);
+} else if (localData) {
   let localObj = JSON.parse(localData)[id];
   if (localObj) {
     store.changeResumeJsonData(localObj);

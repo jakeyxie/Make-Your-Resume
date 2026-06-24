@@ -1,67 +1,51 @@
 package com.example.controller;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import com.example.common.Result;
-import com.example.exception.CustomerException;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.exception.CustomException;
+import com.example.service.OssService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 处理文件上传下载相关的接口
+ * 处理文件上传下载相关的接口（使用阿里云 OSS）
  */
 @RestController
 @RequestMapping("/files")
 public class FileController {
 
+    private static final Logger log = LoggerFactory.getLogger(FileController.class);
+
+    @Autowired
+    private OssService ossService;
+
     /**
-     * 文件上传
+     * 文件上传到 OSS
      */
     @PostMapping("/upload")
     public Result upload(@RequestParam("file") MultipartFile file) throws Exception {
-        // 找到文件的位置
-        String filePath = System.getProperty("user.dir") + "/files/";
-        if (!FileUtil.isDirectory(filePath)) {
-            FileUtil.mkdir(filePath);
+        if (file.isEmpty()) {
+            throw new CustomException("上传文件不能为空");
         }
-        byte[] bytes = file.getBytes();
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();  // 文件的原始名称
-        // 写入文件
-        FileUtil.writeBytes(bytes, filePath + fileName);
-        String url = "http://localhost:8080/files/download/" + fileName;
+        String url = ossService.uploadFile(file);
         return Result.success(url);
     }
 
     /**
-     * 文件下载
-     * 下载路径："http://localhost:8080/files/download/404.jpg"
+     * 文件下载（OSS 文件通过 URL 直接访问，此处保留兼容接口）
      */
     @GetMapping("/download/{fileName}")
-    public void download(@PathVariable String fileName, HttpServletResponse response) throws Exception {
-        // 找到文件的位置
-        String filePath = System.getProperty("user.dir") + "/files/";  // 获取到当前项目的根路径
-        String realPath = filePath + fileName;  //
-        boolean exist = FileUtil.exist(realPath);
-        if (!exist) {
-            throw new CustomerException("文件不存在");
-        }
-        // 读取文件的字节流
-        byte[] bytes = FileUtil.readBytes(realPath);
-        ServletOutputStream os = response.getOutputStream();
-        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
-        response.setContentType("application/octet-stream");
-        // 输出流对象把文件写出到客户端
-        os.write(bytes);
-        os.flush();
-        os.close();
+    public Result download(@PathVariable String fileName) throws Exception {
+        // OSS 文件通过 URL 直接访问，返回 URL 即可
+        // 保留此接口用于兼容旧逻辑
+        return Result.success(fileName);
     }
 
     /**
@@ -69,22 +53,18 @@ public class FileController {
      */
     @PostMapping("/wang/upload")
     public Map<String, Object> wangEditorUpload(MultipartFile file) {
-        String flag = System.currentTimeMillis() + "";
-        String fileName = file.getOriginalFilename();
         try {
-            String filePath = System.getProperty("user.dir") + "/files/";
-            // 文件存储形式：时间戳-文件名
-            FileUtil.writeBytes(file.getBytes(), filePath + flag + "-" + fileName);
-            System.out.println(fileName + "--上传成功");
-            Thread.sleep(1L);
+            String url = ossService.uploadFile(file);
+            Map<String, Object> resMap = new HashMap<>();
+            resMap.put("errno", 0);
+            resMap.put("data", CollUtil.newArrayList(Dict.create().set("url", url)));
+            return resMap;
         } catch (Exception e) {
-            System.err.println(fileName + "--文件上传失败");
+            log.error("wang-editor 文件上传失败", e);
+            Map<String, Object> resMap = new HashMap<>();
+            resMap.put("errno", 1);
+            resMap.put("message", "文件上传失败");
+            return resMap;
         }
-        String http = "http://localhost:8080/files/download/";
-        Map<String, Object> resMap = new HashMap<>();
-        // wangEditor上传图片成功后， 需要返回的参数
-        resMap.put("errno", 0);
-        resMap.put("data", CollUtil.newArrayList(Dict.create().set("url", http + flag + "-" + fileName)));
-        return resMap;
     }
 }

@@ -4,9 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.entity.Account;
 import com.example.service.AdminService;
 import com.example.service.UserService;
-import com.example.entity.Account;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,57 +14,67 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
 import java.util.Date;
 
+/**
+ * JWT Token工具类
+ */
 @Component
 public class TokenUtils {
+
     @Resource
     AdminService adminService;
     @Resource
     UserService userService;
+    @Resource
+    private String jwtSecret;
 
-    static AdminService staticAdminService;;
+    static AdminService staticAdminService;
     static UserService staticUserService;
+    static String staticJwtSecret;
 
-    // springboot工程启动后会加载这段代码
     @PostConstruct
     public void init() {
         staticAdminService = adminService;
         staticUserService = userService;
+        staticJwtSecret = jwtSecret;
     }
-
 
     /**
      * 生成token
      */
     public static String createToken(String data, String sign) {
-        return JWT.create().withAudience(data) // 将 userId-role 保存到 token 里面,作为载荷
-                .withExpiresAt(DateUtil.offsetDay(new Date(), 1)) // 1天后token过期
-                .sign(Algorithm.HMAC256(sign)); // 以 password 作为 token 的密钥, HMAC256算法加密
+        return JWT.create()
+                .withAudience(data)
+                .withExpiresAt(DateUtil.offsetDay(new Date(), 1))
+                .sign(Algorithm.HMAC256(staticJwtSecret));
     }
 
     /**
      * 获取当前登录的用户信息
      */
     public static Account getCurrentUser() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader("token");
-        if (StrUtil.isBlank(token)) {
-            token = request.getParameter("token");
-        }
-        // 拿到token 的载荷数据
-        String audience = JWT.decode(token).getAudience().get(0);
-        String[] split = audience.split("-");
-        String userId = split[0];
-        String role = split[1];
-        // 根据token解析出来的userId去对应的表查询用户信息
-        if ("admin".equals(role)) {
-            return staticAdminService.selectById(userId);
-        } else if ("user".equals(role)) {
-            return staticUserService.selectById(userId);
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String token = request.getHeader("token");
+            if (StrUtil.isBlank(token)) {
+                token = request.getParameter("token");
+            }
+            if (StrUtil.isBlank(token)) {
+                return null;
+            }
+            String audience = JWT.decode(token).getAudience().get(0);
+            String[] split = audience.split("-");
+            String userId = split[0];
+            String role = split[1];
+            if ("admin".equals(role)) {
+                return staticAdminService.selectById(userId);
+            } else if ("user".equals(role)) {
+                return staticUserService.selectById(userId);
+            }
+        } catch (Exception e) {
+            return null;
         }
         return null;
     }
-
 }

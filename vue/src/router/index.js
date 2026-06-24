@@ -5,7 +5,7 @@ const Index = () => import('@/views/index/index.vue');
 const NotFound = () => import('@/views/404/notFound.vue');
 const Login = () => import('@/views/login/index.vue')
 const Person = () => import('@/views/person/index.vue')
-const PersonDetail = () => import('@/views/person/personDetial/index.vue')
+const PersonDetail = () => import('@/views/person/personDetail/index.vue')
 const PersonIntegral = () => import('@/views/person/integralDetail/index.vue')
 const AccountSetting = () => import('@/views/person/accountSetting/index.vue')
 const MyResume = () => import('@/views/person/myResume/index.vue')
@@ -29,7 +29,6 @@ const Introduction = () => import('@/views/admin/introduction/index.vue')
 const Category = () => import('@/views/admin/category/index.vue')
 const Apply = () => import('@/views/admin/resumeSort/index.vue')
 
-const Test = () => import('@/components/LoginDialog/LoginDialog.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -304,16 +303,6 @@ const router = createRouter({
           component: Apply
         }
       ]
-    },
-    {
-      path: '/test',
-      name: 'Test',
-      meta:{
-        title: '测试',
-        keepAlive: true,
-        requireAuth: true
-      },
-      component: Person
     },
     {
       path: '/:pathMatch(.*)', redirect: '404'

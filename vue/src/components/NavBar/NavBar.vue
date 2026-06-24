@@ -100,49 +100,68 @@ const toHome = () =>{
 </script>
 
 <style lang="scss" scoped>
-.nav-bar-box{
+.nav-bar-box {
   display: flex;
   height: 70px;
   width: 100%;
   box-sizing: border-box;
-  //position: v-bind(navPositions);
   position: fixed;
-  transition: 0.5s ease !important; /* 平滑过渡效果 */
   padding: 0 40px;
   top: 0;
   align-items: center;
   justify-content: space-between;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 10px;
-  background-color: rgb(255, 255, 255);
-  z-index: 10;
-  .nav-logo{
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  z-index: 100;
+  transition: all 0.3s ease;
+
+  .nav-logo {
     display: flex;
     align-items: center;
-    .nav-text {
-      letter-spacing: 4px;
-      font-size: 22px;
-      font-weight: 600;
-      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
-      cursor: pointer;
-    }
+    cursor: pointer;
+
     .logo {
-      width: 70px;
-      height: 70px;
-      margin-left:50px;
+      width: 48px;
+      height: 48px;
+      margin-left: 50px;
       background-image: url('@/assets/images/logo.png');
       background-size: 250%;
       background-position: center;
-      z-index: 2;   /* 根据内容自动调整高度 */
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-text {
+      margin-left: 10px;
+      letter-spacing: 4px;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #5b3df4, #00c9a7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       cursor: pointer;
     }
   }
-  .midnavi{
+
+  .nav-logo:hover .logo {
+    transform: rotate(-5deg) scale(1.05);
+  }
+
+  .midnavi {
     flex: 1;
   }
+
   .el-menu {
     border: none !important;
+    background: transparent !important;
   }
-  .user{
+
+  .user {
     width: fit-content;
     padding-left: 20px;
     padding-right: 40px;
@@ -150,14 +169,38 @@ const toHome = () =>{
     align-items: center;
   }
 }
+
 .el-menu .is-active {
-  background-color: #ecf5ff;
-  color: #fff;
+  background-color: transparent !important;
+  color: var(--primary) !important;
+  position: relative;
 }
-.el-menu .el-menu-item{
-  font-size: 18px;
-  padding: 0 32px 0 32px;
+
+.el-menu .is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: linear-gradient(135deg, #5b3df4, #00c9a7);
+  border-radius: 2px;
 }
+
+.el-menu .el-menu-item {
+  font-size: 16px;
+  padding: 0 28px 0 28px;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.el-menu .el-menu-item:hover {
+  color: var(--primary) !important;
+  background-color: rgba(91, 61, 244, 0.04) !important;
+}
+
 .el-dropdown {
   cursor: pointer;
 }
@@ -166,6 +209,33 @@ const toHome = () =>{
   outline: none;
 }
 
+.logon-register-box {
+  display: flex;
+  gap: 12px;
 
+  .register-btn {
+    border-radius: 8px;
+    border-color: var(--border);
+    font-weight: 500;
+    transition: all 0.3s ease;
 
+    &:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  }
+
+  .login-btn {
+    border-radius: 8px;
+    background: linear-gradient(135deg, #5b3df4, #7c63f5) !important;
+    border: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(91, 61, 244, 0.4) !important;
+    }
+  }
+}
 </style>

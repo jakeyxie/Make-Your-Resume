@@ -1,8 +1,5 @@
 package com.example.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
 //管理员信息
 public class User extends Account {
     private Integer id;
@@ -16,12 +13,24 @@ public class User extends Account {
     private String surname;
 
     // 非数据库字段
-    @Setter
-    @Getter
     private String ids;
-    @Setter
-    @Getter
     private String[] idsArr;
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
+
+    public String[] getIdsArr() {
+        return idsArr;
+    }
+
+    public void setIdsArr(String[] idsArr) {
+        this.idsArr = idsArr;
+    }
 
     @Override
     public String getSurname() {

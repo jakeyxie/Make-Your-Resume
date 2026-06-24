@@ -1,6 +1,6 @@
 package com.example.common;
 
-import org.springframework.context.annotation.Bean;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -8,16 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    @Resource
+    JWTInterceptor jwtInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor())
+        registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/user/forgetPassword", "/validate/**", "/user/register", "/files/download/**");
     }
-
-    @Bean
-    public JWTInterceptor jwtInterceptor() {
-        return new JWTInterceptor();
-    }
-
 }

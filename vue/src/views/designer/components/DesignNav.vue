@@ -58,11 +58,11 @@
   </div>
 
 
-  <TemplateImgDiglog
+  <TemplateImgDialog
   :formVisible="data.formVisible"
   @close="closeTemplateDialog"
   >
-  </TemplateImgDiglog>
+  </TemplateImgDialog>
   <!-- 上传json代码编辑器 -->
   <import-json-dialog
     :dialogVisible="dialogVisible"
@@ -81,9 +81,7 @@
   import ImportJsonDialog from '@/components/ImportJsonDialog/ImportJsonDialog.vue';
   import { debounce } from 'lodash';
   import request from "@/utils/request.js";
-  import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
-  import templateList from "@/template/index.js";
-  import TemplateImgDiglog from "@/views/designer/components/TemplateImgDiglog.vue";
+  import TemplateImgDialog from "@/views/designer/components/TemplateImgDialog.vue";
   let { resumeJsonStore } = storeToRefs(useResumeJsonStore()); // store里的模板数据
 
   const emit = defineEmits(['generateReport', 'reset', 'saveDataToLocal']);
@@ -136,9 +134,6 @@
     draftTips.value = `已自动保存草稿  ${formattedDate}`;
     console.log(draftTips);
   };
-  const handleFileSuccess = (res) => {
-    templateList.img = res.data
-  }
   //导入图标
   const handleEdit = () => {
     data.formVisible = true

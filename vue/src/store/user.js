@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { reactive } from 'vue';
 
 const user_data = JSON.parse(localStorage.getItem('user_data') || '{}');
 
@@ -11,10 +12,8 @@ export const useUserDataStore = defineStore('userData',{
     getters: {},
     actions: {
         updateUserData(obj) {
-            this.userDataStore = obj;
             // 通过对象替换触发响应式更新
             this.userDataStore = { ...this.userDataStore, ...obj };
         }
     }
 });
-
