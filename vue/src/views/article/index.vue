@@ -14,15 +14,21 @@
       <div class="template-title">
         <div><span>———</span>优质<span style="color:#5b3df4;">求职攻略,</span>随时一键查看<span>———</span></div>
       </div>
+
       <!--  模板导航  -->
       <div class="template-select">
         <div class="template-style">
           <div style="margin-right: 20px; margin-left: 20px; font-size: 18px; font-weight: bold">
             攻略分类:
           </div>
-          <el-button style="text-align: center; border-radius: 15px; height: 30px; " :class="{ 'highlight-button': data.activeSort === item.sort }"
-                     v-for="(item,index) in data.categoryData" :key="index" @click="styleSort(item)"> {{item.title}} </el-button>
+          
+          <el-button style="text-align: center; border-radius: 15px; height: 30px; " 
+            :class="{ 'highlight-button': data.activeSort === item.sort }"
+            v-for="(item,index) in data.categoryData" 
+            :key="index" 
+            @click="styleSort(item)"> {{item.title}} </el-button>
         </div>
+
         <!--  搜索框    -->
         <div class="search" >
           <el-icon style="margin-left: 10px; margin-right: 0"><Search /></el-icon>
@@ -74,13 +80,27 @@ const data = reactive({
   total: 0,
   title: "",
   categoryData: [],
-  activeSort: '', // 存储当前高亮的sort值
-  style: 10,
+  activeSort: '0', // 存储当前高亮的sort值
+  style: '0',
 })
 
 const navTo = (url) => {
   location.href = url
 }
+
+const loadCategory = () => {
+  request.get('/category/selectAll').then(res => {
+    if (res.code === '200') {
+      data.categoryData = res.data,
+      data.activeSort = '0'
+      data.style = '0'
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
+}
+
+loadCategory()
 
 const load = () => {
   request.get('/introduction/selectPage', {
@@ -102,19 +122,10 @@ const load = () => {
 }
 load()
 
-const loadCategory = () => {
-  request.get('/category/selectAll').then(res => {
-    if (res.code === '200') {
-      data.categoryData = res.data
-    } else {
-      ElMessage.error(res.msg)
-    }
-  })
-}
-loadCategory()
+
 
 const styleSort = (value) =>{
-  data.activeSort = value.sort;
+  data.activeSort = value.sort
   data.style = value.id
   load()
   console.log(data.style)

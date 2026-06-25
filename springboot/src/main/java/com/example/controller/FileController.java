@@ -3,8 +3,10 @@ package com.example.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import com.example.common.Result;
+import com.example.entity.User;
 import com.example.exception.CustomException;
 import com.example.service.OssService;
+import com.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class FileController {
 
     @Autowired
     private OssService ossService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 文件上传到 OSS
@@ -35,6 +39,9 @@ public class FileController {
             throw new CustomException("上传文件不能为空");
         }
         String url = ossService.uploadFile(file);
+        User user = new User();
+        user.setAvatar( url);
+        userService.update(user);
         return Result.success(url);
     }
 

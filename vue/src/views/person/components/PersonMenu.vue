@@ -50,6 +50,12 @@
       iconfont: 'icon-jianlimuban-04',
       title: '在线简历',
       path: '/person/myOnlineResume'
+    },
+    {
+      index: 'InterviewRecords',
+      iconfont: 'icon-jilu',
+      title: '面试记录',
+      path: '/person/interviewRecords'
     }
     // ,
     // {

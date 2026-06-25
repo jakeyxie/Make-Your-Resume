@@ -10,6 +10,7 @@
         left join user on introduction.userId = user.id
         <where>
             <if test="title != null and title != ''">and introduction.title like concat('%', #{title}, '%')</if>  <!-- 相当于 title like '%1%' -->
+            <if test="categoryId != null and categoryId != 0">and introduction.categoryId = #{categoryId}</if>
             <if test="userId != null"  >and introduction.userId = #{userId}</if>
         </where>
         order by id desc

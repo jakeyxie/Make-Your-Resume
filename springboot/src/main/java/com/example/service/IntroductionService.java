@@ -58,10 +58,6 @@ public class IntroductionService {
     }
 
     public PageInfo<Introduction> selectPage(Integer pageNum, Integer pageSize, Introduction introduction) {
-        Account currentUser = TokenUtils.getCurrentUser();
-        if ("user".equals(currentUser.getRole())) {
-            introduction.setUserId(currentUser.getId());
-        }
         PageHelper.startPage(pageNum, pageSize);
         List<Introduction> list = introductionMapper.selectAll(introduction);
         for (Introduction dbIntroduction : list) {

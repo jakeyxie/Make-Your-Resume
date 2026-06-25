@@ -17,7 +17,7 @@
       >
         <el-menu-item style="margin-left: 20%" index="/">首页</el-menu-item>
         <el-menu-item index="/AiResume">AI简历制作</el-menu-item>
-
+        <el-menu-item index="/interview" >模拟面试</el-menu-item>
         <el-menu-item index="/Templates" >简历模版</el-menu-item>
         <el-menu-item index="/article" >求职攻略</el-menu-item>
         <el-menu-item index="/person/MyResume" >我的简历</el-menu-item>

@@ -40,6 +40,7 @@
   const data = reactive({
     user: userDataStore
   })
+  
   // 表单填写数据
   const ruleForm = reactive({
     username: '',

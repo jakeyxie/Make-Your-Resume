@@ -9,7 +9,6 @@
         <where>
             <if test="title != null and title != ''">and title like concat('%', #{title}, '%')</if>  <!-- 相当于 name like '%1%' -->
         </where>
-        order by id desc
     </select>
 
     <insert id="insert">

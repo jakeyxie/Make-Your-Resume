@@ -4,13 +4,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
+    username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
     url: jdbc:mysql://localhost:3306/graduation_2025?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
   mail:
     host: smtp.qq.com
-    username: 1293555912@qq.com
-    password: ${SMTP_PASSWORD:nvgqdkbbumgdjiaj}
+    username: ${SMTP_USERNAME:<EMAIL>}
+    password: ${SMTP_PASSWORD:<PASSWORD>}
     properties:
       mail:
         smtp:
@@ -28,7 +28,7 @@ mybatis:
 
 # JWT配置
 jwt:
-  secret: ${JWT_SECRET:my-resume-jwt-secret-key-2025}
+  secret: ${JWT_SECRET:${JWT_SECRET:<SECRET>}}
 
 # CORS配置（多个用逗号分隔）
 cors:
@@ -42,7 +42,7 @@ app:
 aliyun:
   oss:
     endpoint: ${OSS_ENDPOINT:oss-cn-hangzhou.aliyuncs.com}
-    access-key-id: ${OSS_ACCESS_KEY_ID:}
-    access-key-secret: ${OSS_ACCESS_KEY_SECRET:}
-    bucket-name: ${OSS_BUCKET_NAME:}
+    access-key-id: ${OSS_ACCESS_KEY_ID:<KEY>}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET:<SECRET>}
+    bucket-name: ${OSS_BUCKET_NAME:<BUCKET_NAME>}
     cdn-domain: ${OSS_CDN_DOMAIN:}

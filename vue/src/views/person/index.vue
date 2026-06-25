@@ -14,10 +14,16 @@
   </div>
 </template>
 <script setup>
-import LeftCardVue from './components/LeftCard.vue';
-import RightContentVue from './components/RightContent.vue';
-import NavBar from "@/components/NavBar/NavBar.vue";
-
+  import LeftCardVue from './components/LeftCard.vue';
+  import RightContentVue from './components/RightContent.vue';
+  import NavBar from "@/components/NavBar/NavBar.vue";
+  import { useUserDataStore } from '@/store/user';
+  
+  const { userDataStore } = useUserDataStore();
+  const store = useUserDataStore();
+  const data = reactive({
+    user: userDataStore
+  })
 
 </script>
 <style lang="scss" scoped>

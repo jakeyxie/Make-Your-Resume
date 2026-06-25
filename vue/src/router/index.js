@@ -10,6 +10,7 @@ const PersonIntegral = () => import('@/views/person/integralDetail/index.vue')
 const AccountSetting = () => import('@/views/person/accountSetting/index.vue')
 const MyResume = () => import('@/views/person/myResume/index.vue')
 const MyOnlineResume = () => import('@/views/person/onlineResume/index.vue')
+const InterviewRecords = () => import('@/views/person/interviewRecords/index.vue')
 // const MyComment = () => import('@/views/person/accountSetting/index.vue')
 const ForgetPassword = () => import('@/views/forgetPassword/index.vue')
 const ResetPassword = () => import('@/views/resetPassword/index.vue')
@@ -17,6 +18,8 @@ const Article = () => import('@/views/article/index.vue');
 const Templates = () => import('@/views/templates/index.vue')
 const ArticleDetail = () => import('@/views/admin/introduction/components/IntroductionDetail.vue');
 const Ai = () => import('@/views/ai/index.vue');
+const Interview = () => import('@/views/interview/index.vue');
+const InterviewReport = () => import('@/views/interview/report.vue');
 
 //管理员界面
 const Admin = () => import('@/views/admin/index.vue')
@@ -114,6 +117,26 @@ const router = createRouter({
       component: Ai
     },
     {
+      path: '/interview',
+      name: 'Interview',
+      meta:{
+        title: '模拟面试',
+        keepAlive: true,
+        requireAuth: true
+      },
+      component: Interview
+    },
+    {
+      path: '/interview/report/:id',
+      name: 'InterviewReport',
+      meta:{
+        title: '面试报告',
+        keepAlive: false,
+        requireAuth: true
+      },
+      component: InterviewReport
+    },
+    {
       path: '/person',
       name: 'Person',
       meta:{
@@ -194,6 +217,18 @@ const router = createRouter({
             showTitle: true
           },
           component: MyOnlineResume
+        },
+        {
+          path: 'interviewRecords',
+          name: 'InterviewRecords',
+          meta: {
+            title: '面试记录',
+            keepAlive: true,
+            isShowComNav: true,
+            requireLogin: true,
+            showTitle: true
+          },
+          component: InterviewRecords
         }
       ]
     },
